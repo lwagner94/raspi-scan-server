@@ -1,0 +1,40 @@
+- hosts: scanner
+  tasks:
+  - name: Copy scanbd config
+    copy:
+      src: files/scanbd.conf
+      dest: /etc/scanbd/scanbd.conf
+      owner: root
+      group: root
+      mode: u=rw,g=r,o=r
+    register: scanbd
+
+  - name: Copy dispatch script
+    copy:
+      src: files/dispatch.script
+      dest: /etc/scanbd/dispatch.script
+      owner: root
+      group: root
+      mode: u=rwx,g=rx,o=rx
+
+  - name: Install requirements for script
+    pacman:
+      name: "{{ item }}"
+      state: present
+    loop:
+      - python-sh
+      - imagemagick
+
+  - name: Copy scan script
+    copy:
+      src: files/scan.py
+      dest: /usr/local/bin/scan.py
+      owner: root
+      group: root
+      mode: u=rwx,g=rx,o=rx
+
+  - name: Restart scanbd
+    service:
+      name: myscanbd
+      state: restarted
+    when: scanbd.changed
