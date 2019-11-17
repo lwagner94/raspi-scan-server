@@ -4,12 +4,11 @@ import sys
 import uuid
 from datetime import datetime
 from pathlib import Path
-from sh import touch, scanimage, convert, tiff2pdf
+from sh import touch, scanimage, convert, tiff2pdf, chown
 
 
 def get_scan_dir():
-    d = Path.home() / "scans"
-    d.mkdir(exist_ok=True)
+    d = Path("/scan")
     return d
 
 def get_pdf_path():
@@ -25,13 +24,12 @@ def scan_image(dpi):
     scanimage("--format", "tiff",
               "--mode", "Color",
               "--resolution", str(dpi),
-              "-o", str(path))
+              _tty_out=False,
+              _out=str(path))
 
     return path
 
 def convert2pdf(image, pdf, grayscale, quality):
-    pdf_path = get_pdf_path()
-
     if grayscale:
         convert(str(image),
                 "-colorspace", "Gray",
@@ -49,7 +47,12 @@ def scan_and_convert(dpi, grayscale, quality):
         image = scan_image(dpi)
         print("OK")
         print("Converting image ............... ", end="", flush=True)
-        convert2pdf(image, get_pdf_path(), grayscale, quality)
+        pdf_path = get_pdf_path()
+        convert2pdf(image, pdf_path, grayscale, quality)
+        print("OK")
+        print("Setting permissions ............ ", end="", flush=True)
+        chown("scan:scan", str(pdf_path))
+
         print("OK")
     finally:
         print("Removing temporary file......... OK")

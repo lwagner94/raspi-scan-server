@@ -1,2 +1,2 @@
 #!/bin/sh
-sudo -u scan scan.py $SCANBD_ACTION
+scan.py $SCANBD_ACTION
