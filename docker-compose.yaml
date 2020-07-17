@@ -3,15 +3,18 @@ services:
   scanserver:
     build: .
     privileged: true
+    restart: always
     volumes: 
       - /dev/bus/usb:/dev/bus/usb
       - files:/scan
 
     tmpfs:
       - /tmp
+    network_mode: none
 
   ftp:
-    image: delfer/alpine-ftp-server
+    build: ftp
+    restart: always
     ports:
       - "21:21"
       - "21000-21010:21000-21010"
@@ -21,14 +24,7 @@ services:
     volumes:
       - files:/ftp/scan
 
-
-  # web:
-  #   image: nginx
-  #   ports:
-  #   - "8080:80"
-  #   environment:
-  #   - NGINX_HOST=foobar.com
-  #   - NGINX_PORT=80
+    network_mode: host
 
 volumes:
   files:
