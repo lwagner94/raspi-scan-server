@@ -1,6 +1,6 @@
 FROM debian:buster-slim
 
-RUN apt update && apt install -y --no-install-recommends sane-utils scanbd python3-sh imagemagick sudo libtiff-tools
+RUN apt update && apt install -y --no-install-recommends sane-utils scanbd python3-sh imagemagick sudo libtiff-tools poppler-utils
 COPY files/scanbd.conf /etc/scanbd/scanbd.conf
 COPY files/dispatch.script /etc/scanbd/dispatch.script
 COPY files/scan.py /usr/local/bin/scan.py

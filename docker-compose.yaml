@@ -24,7 +24,7 @@ services:
     volumes:
       - files:/ftp/scan
 
-    network_mode: host
+    #network_mode: host
 
 volumes:
   files:
